@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import { connect } from 'react-redux';
+
+import { About, Store, Cart, NoPage } from './pages';
+import { Content, Footer, Header } from './components';
+import { setProducts } from './actions/products';
+import data from './data/products.json';
+
 import './App.css';
 
-function App() {
+function App({ setProducts }) {
+  useEffect(() => {
+    setProducts(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Content>
+        <Router>
+          <Header />
+          <Switch>
+            <Route path="/about" component={About} />
+            <Route exact path="/" component={Store} />
+            <Route path="/cart" component={
+              () => <Cart
+              />}
+            />
+            <Route path="*" component={NoPage} />
+          </Switch>
+          <Footer />
+        </Router>
+      </Content>
     </div>
   );
 }
 
-export default App;
+export default connect(null, { setProducts })(App);
